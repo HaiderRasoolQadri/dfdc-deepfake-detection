@@ -1,0 +1,15 @@
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.env.*
+*.pth
+*.pt
+*.ckpt
+*.joblib
+*.zip
+data/
+datasets/
+checkpoints/
+*.mp4
