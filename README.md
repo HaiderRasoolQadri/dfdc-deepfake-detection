@@ -1,9 +1,9 @@
 # DFDC Deepfake Detection — Reproduction and Extension
 
 **Advanced Generative AI | MS Data Science | FAST-NUCES Islamabad**  
-**Author:** Haider Rasool Qadri (24I-8023)
 
-This repository records two connected assignments. **Assignment 2 (A2)** is a resource-constrained partial reproduction of CNN deepfake detection and FGSM experiments from Abbasi et al. (2025). **Assignment 3 (A3)** extends the same trained models to a second dataset (FaceForensics++), tests two input preprocessing methods, and evaluates a lightweight conditional preprocessing head.
+
+This repository records two connected assignments. **Assignment 2** is a resource-constrained partial reproduction of CNN deepfake detection and FGSM experiments from Abbasi et al. (2025). **Assignment 3** extends the same trained models to a second dataset (FaceForensics++), tests two input preprocessing methods, and evaluates a lightweight conditional preprocessing head.
 
 > **Main finding:** The head accurately distinguished clean images from FGSM-attacked images in the tested setting, but conditional JPEG and Gaussian preprocessing did **not** consistently recover correct REAL/FAKE classifications. Detection accuracy must not be confused with deepfake classification accuracy.
 
@@ -58,8 +58,6 @@ FGSM uses ε=0.01 and is generated separately using each CNN. JPEG compression i
 | ResNet50 | 48.13% | 34.38% | 40.38% |
 | ResNet101 | 35.19% | 25.88% | 24.50% |
 
-**Warning:** VGG16 JPEG improvement does **not** recover the REAL class: its REAL recall under attack remains **0%**. The other methods generally reduce attacked accuracy.
-
 ### Adaptive perturbation detection head
 
 The A3 notebook trains a `StandardScaler + LogisticRegression` binary classifier on **30 image-only statistics** (channel means, standard deviations, residuals and image gradients). It learns **CLEAN vs ATTACKED** from Xception-generated FGSM ε=0.01 examples. It does not classify REAL/FAKE and does not use a paired clean reference at prediction time.
@@ -86,15 +84,14 @@ A paired, REAL/FAKE-stratified **video-folder cluster bootstrap (2,000 resamples
    - A3 saved results: `haiderrasoolqadri/dfdc-ffpp-assignment3-results` (**private; access required**).
 2. Attach the relevant datasets to Kaggle. Verify the notebook's `/kaggle/input/datasets/...` paths; Kaggle mount paths may vary.
 3. Open [`extension/notebooks/dfdc-extension.ipynb`](extension/notebooks/dfdc-extension.ipynb). This is the **original recorded A3 run** with output and backup/recovery cells; it is **not** a clean one-click script. Start with the setup and data manifest cells; adjust input paths; run only the stages you need.
-4. Source checkpoints are loaded through the A2 project modules (`evaluate.py`, `config.py`, `attacks/fgsm.py`). These must be available in the restored A2 project directory.
-5. The notebook writes its outputs to `/kaggle/working/assignment3/` and figures to `final_figures/`.
-6. For a quick audit without GPU, restore the saved A3 CSVs and run the notebook's analysis and plotting cells. To independently reproduce model evaluation, run the GPU-dependent cells and ensure the same sampling manifest, models and seed are used.
+4. Source checkpoints are loaded through the A2 project modules (`evaluate.py`, `config.py`, `attacks/fgsm.py`).
+5. For a quick audit without GPU, restore the saved A3 CSVs and run the notebook's analysis and plotting cells. To independently reproduce model evaluation, run the GPU-dependent cells and ensure the same sampling manifest, models and seed are used.
 
 **Privacy / access:** Public GitHub viewers cannot automatically access private Kaggle datasets. Checkpoints, raw images and proprietary or third-party frames are intentionally excluded from the repository. The manifests preserve paths and selection metadata, not pixels.
 
 ## Repository layout
 
-The **existing A2 code stays at its current paths**. Add the A3 extension rather than renaming all older modules.
+The **existing A2 code stays at its current paths**.
 
 ```text
 README.md                         <- this project overview
@@ -105,15 +102,8 @@ extension/
   manifests/                     <- add sampled CSV manifests
   results/                       <- add saved summary result CSVs
   figures/                       <- add saved PNG plots (if available)
-reports/
-  assignment3_updated.tex        <- updated A3 report source
+
 ```
-
-See [`extension/README.md`](extension/README.md) for exact artifact filenames and limitations. The notebook and reports alone do not contain the underlying private images or checkpoints.
-
-## Scope changes from the A1 proposal
-
-The A1 proposal considered **PGD, multiple ε settings, ViT-small, seven transformations, perceptual quality (PSNR/SSIM), and inference latency**. These were **not completed in A3**. The implemented study instead tests one FGSM strength, two transformations and four existing CNNs. The attack-state head was added in the A3 extension. Uncompleted proposal items are **future work**, not results.
 
 ## Base paper and credits
 
@@ -121,5 +111,3 @@ The A1 proposal considered **PGD, multiple ε settings, ViT-small, seven transfo
 - DFDC dataset: Dolhansky et al., *The DeepFake Detection Challenge (DFDC) Dataset* (2020).
 - FaceForensics++: Rössler et al., *FaceForensics++: Learning to Detect Manipulated Facial Images* (ICCV 2019).
 - Attack method: Goodfellow et al., *Explaining and Harnessing Adversarial Examples* (ICLR 2015).
-
-**Status:** A2 completed; A3 experiments recorded. The repository documentation does **not** claim that all original A1 research objectives were completed.
